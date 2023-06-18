@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"strconv"
@@ -41,6 +40,12 @@ type Secret struct {
 	Data string `yaml:"data"`
 }
 
+type RepoSecretApp struct {
+	LibHelmAMQ struct {
+		SealedSecrets map[string]interface{} `yaml:"sealedsecrets"`
+	} `yaml:"lib-helm-amq"`
+}
+
 func updateSecretYaml(repoPath string, secret InputSecret, sealedData SealedSecrets) error {
 	fmt.Println(repoPath, secret, sealedData)
 	name := sealedData.Metadata.Name
@@ -55,10 +60,9 @@ func updateSecretYaml(repoPath string, secret InputSecret, sealedData SealedSecr
 
 	if itsBatch {
 		var fileSecret RepoSecretBatch
-
 		err = yaml.Unmarshal(data, &fileSecret)
 		if err != nil {
-			log.Fatalf("Error unmarshaling secrets.yaml: %v", err)
+			return fmt.Errorf("error unmarshaling secrets.yaml: %v", err)
 		}
 
 		fileSecret.LibHelmSCDF.SealedSecretsEnabled = true
@@ -107,7 +111,36 @@ func updateSecretYaml(repoPath string, secret InputSecret, sealedData SealedSecr
 			return fmt.Errorf("error writing secrets.yaml: %v", err)
 		}
 	} else {
+		var fileSecret interface{}
+		err := yaml.Unmarshal(data, &fileSecret)
+		if err != nil {
+			return fmt.Errorf("error unmarshaling secrets.yaml: %v", err)
+		}
 
+		if secretMap, ok := fileSecret.(map[interface{}]interface{}); ok {
+			// No existe?
+			if _, ok := secretMap["enabled"]; !ok {
+				secretMap["enabled"] = true
+			} else {
+				if enabled, ok := secretMap["enabled"].(bool); ok && !enabled {
+					secretMap["enabled"] = true
+				}
+			}
+
+			// Data exist
+			for i, v := range encryptedData {
+				if _, ok = secretMap["data"]; !ok {
+					secretMap["data"] = make(map[interface{}]interface{})
+					dataMap := secretMap["data"].(map[interface{}]interface{})
+					dataMap[i] = v
+				} else {
+					dataMap := secretMap["data"].(map[interface{}]interface{})
+					dataMap[i] = v
+				}
+			}
+		} else {
+			return fmt.Errorf("file it is not formated well")
+		}
 	}
 
 	cmd := exec.Command("yq", "-i", "--indent", "2", yamlSecretPath)

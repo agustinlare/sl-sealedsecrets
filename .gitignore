@@ -2,6 +2,6 @@
 .git_agustinlare/
 __debug_bin
 .DS_Store
-example.yaml
+example*.yaml
 ref_*
 secret.yaml
