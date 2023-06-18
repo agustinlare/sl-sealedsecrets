@@ -1,0 +1,31 @@
+{{ define "homepage/home.html" }}
+<!-- Masthead -->
+<header>
+  <div class="container">
+    <h4>Step 1: Crear template</h4>
+    <div>
+      <pre style="background-color: #eee;border: 1px solid #999;display: block;padding: 20px;">
+apiVersion: v1
+kind: Secret
+metadata:
+  name: SECRET_NAME
+  namespace: NAMESPACE
+  proyectkey: BIT_BUCKET_PROYECT
+  repository: BIT_BUCKET_APP_REPOSITORY
+stringData:
+  LOREM_IPSUM_DOLOR_SIT_AMET: foo-var
+  CONSECTETUR_ADIPSICING: foo-var
+type: Opaque
+      </pre>
+    </div>
+    <h4>Step 2: Drag and yaml template</h4>
+    <form action="/" 
+          class="dropzone"
+          id="upload-form"></form>
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+    <script>var myDropzone = new Dropzone("upload-form", {url: "/"});</script>
+    <p></p>
+    {{ template "layouts/messages.html" .}}
+  </div>
+</header>
+{{ end }}

@@ -1,0 +1,24 @@
+FROM golang:1.18.6-buster
+
+ARG ELASTIC_URL
+ARG ELASTIC_TOKEN
+
+ENV API_GO_PATH="/go/src/github.com/sealedsecret"
+ENV ELASTIC_APM_SERVER_URL=${ELASTIC_URL}
+ENV ELASTIC_APM_SECRET_TOKEN=${ELASTIC_TOKEN}
+ENV HEALTHCHECK_STATUS=true
+ENV COUNTER_HIT_GOLANG=0
+ENV UPLOADED_VT_FILE=
+ENV SAK_CONFIG_FILE=/opitem/config.json
+
+RUN mkdir -p ${API_GO_PATH}
+RUN apt update
+RUN apt install git unzip -y
+COPY . ${API_GO_PATH}
+
+WORKDIR ${API_GO_PATH}
+
+RUN go mod download
+RUN go build
+
+CMD [ "./sak" ]

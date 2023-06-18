@@ -1,0 +1,33 @@
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.info {
+  padding: 20px;
+  background-color: #04AA6D;
+  color: white;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+
+.card-body {
+  flex: 1 1 auto;
+  min-height: 1px;
+  padding: 1.25rem;
+  color: black;
+}

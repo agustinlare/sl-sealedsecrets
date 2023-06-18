@@ -1,0 +1,10 @@
+{{ define "layouts/messages.html" }}
+<br><br><br>
+{{ if .error }}
+  <div class="alert" style="text-align: left">Error: {{ .error }}</div>
+{{ end }}
+{{ if .messages }}
+  <div class="info" style="text-align: left">Succes! {{ .messages }}</div>
+{{ end }}
+
+{{ end }}
