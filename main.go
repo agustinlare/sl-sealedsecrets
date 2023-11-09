@@ -91,11 +91,13 @@ func SecretUpload(c *gin.Context) {
 			return
 		}
 
-		repoPath, err := cloneRepository(environment, secret.Metadata.ProjectKey, secret.Metadata.Repository)
-		if err != nil {
-			_ = errResponse(err, c)
-			return
-		}
+		// repoPath, err := cloneRepository(environment, secret.Metadata.ProjectKey, secret.Metadata.Repository)
+		// if err != nil {
+		// 	_ = errResponse(err, c)
+		// 	return
+		// }
+
+		repoPath := "/tmp/encuesta-satisfaccion-cliente-2854192321"
 
 		err = updateSecretYaml(repoPath, secret, sealedData)
 		if err != nil {
